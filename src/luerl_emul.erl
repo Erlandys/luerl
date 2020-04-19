@@ -941,8 +941,9 @@ functioncall(#funref{env=Env}=Funref, Args, Stk, Cs, St0) ->
     %% Here we must save the stack in state as function may need it.
     {Func,St1} = get_funcdef(Funref, St0#luerl{stk=Stk}),
     call_luafunc(Func, Args, Stk, Env, Cs, St1);
-functioncall(#erl_func{code=Func}, Args, Stk, [Cf|Cs], #luerl{stk=Stk0}=St0) ->
+functioncall(#erl_func{code=Func,env=InnerArgs}, LuaArgs, Stk, [Cf|Cs], #luerl{stk=Stk0}=St0) ->
     %% Here we must save the stacks in state as function may need it.
+    Args=InnerArgs++LuaArgs, %% Join erl specified arguments with lua specified arguments.
     {Ret,St1} = Func(Args, St0#luerl{stk=Stk,cs=Cs}),
     #call_frame{is=Is,cont=Cont,lvs=Lvs,env=Env} = Cf,
     emul(Is, Cont, Lvs, [Ret|Stk], Env, Cs, St1#luerl{stk=Stk0,cs=Cs});

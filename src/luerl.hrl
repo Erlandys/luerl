@@ -92,7 +92,7 @@
 		  b}).				%Code block
 -define(IS_LUAFUNC(F), is_record(F, lua_func)).
 
--record(erl_func,{code}).			%Erlang code (fun)
+-record(erl_func,{code,env=[]}).			%Erlang code (fun)
 -define(IS_ERLFUNC(F), is_record(F, erl_func)).
 
 %% Test if it a function, of either sort.
